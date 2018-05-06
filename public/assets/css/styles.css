@@ -1,0 +1,28 @@
+.card {
+	margin: 15px 0 15px 0;
+}
+
+.jumbotron {
+	background-image: url(../img/book-background.jpg);
+	background-size: cover;
+	background-position: center center;
+}
+
+.jumbotron h1, .jumbotron p {
+	font-weight: 400;
+	color: white;
+	text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;  
+    /*background-color:rgba(0, 0, 0, 0.5);*/
+}
+
+.jumbotron p {
+	font-size: 20px;
+}
+
+.background {
+	color: white;
+}

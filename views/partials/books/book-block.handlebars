@@ -1,0 +1,7 @@
+<tr>
+  <th scope="row">{{dataValues.id}}</th>
+  <td>{{dataValues.title}}</td>
+  <td>{{dataValues.author}}</td>
+  <td><button class="update-status btn btn-outline-success" data-bookid="{{dataValues.id}}" data-newstatus="{{finished}}">{{#if finished}}Mark as read{{else}}Mark as unread{{/if}}</button></td>
+  <td><button class="delete btn btn-outline-danger" data-bookid="{{dataValues.id}}">Delete</button></td>
+ </tr>
