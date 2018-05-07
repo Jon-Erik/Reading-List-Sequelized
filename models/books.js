@@ -20,7 +20,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		reader: {
 			type: DataTypes.STRING,
-	    	allowNull: true,
+	    	allowNull: false,
+	    	defaultValue: "Click to add a reader",
 	    	validate: {
 	    		len: [1, 140]
 	    	}

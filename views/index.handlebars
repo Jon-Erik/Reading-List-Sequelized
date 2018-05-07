@@ -15,6 +15,7 @@
 				      <th scope="col">ID #</th>
 				      <th scope="col">Title</th>
 				      <th scope="col">Author</th>
+				      <th scope="col">Reader</th>
 				      <th scope="col">Mark as Read</th>
 				      <th scope="col">Delete</th>
 				    </tr>
@@ -40,6 +41,7 @@
 				      <th scope="col">ID #</th>
 				      <th scope="col">Title</th>
 				      <th scope="col">Author</th>
+				      <th scope="col">Reader</th>
 				      <th scope="col">Mark as unread</th>
 				      <th scope="col">Delete</th>
 				    </tr>
@@ -78,6 +80,43 @@
 	</div>
 
 	<script type="text/javascript">
+		//displays an input box to add a reader when clicked
+		$(".reader").on("click", function() {
+			var currentReader = $(this).data("reader");
+			$(this).children().hide();
+			$(this).children("input.reader-edit").attr("placeholder", currentReader);
+			$(this).children("input.reader-edit").show();
+			$(this).children("input.reader-edit").focus();
+		});
+
+		//updates the new reader to the database when enter is hit in edit mode
+		$(".reader").on("keyup", function() {
+			var updatedBookId = $(this).data("bookid");
+
+			if (event.which === 13) {
+				var reader = $(this).children("input").val().trim();
+
+				var newReader = {
+					reader: reader
+				};
+
+				$.ajax("update-reader/" + updatedBookId, {
+					type: "PUT",
+					data: newReader
+				}).then(function() {
+					console.log("updated reader for id" + updatedBookId);
+					location.reload();
+				})
+			}
+		});
+
+		//hides input box and shows reader span when input is out of focus
+		$(document).on("blur", ".reader", function() {
+			var currentReader = $(this).data("reader");
+			$(this).children().hide();
+			$(this).children("span").show();
+		});
+
 		//sets up post ajax request to add book to the database on submitting form
 		$("#new-book").submit(function(event) {
 			event.preventDefault();

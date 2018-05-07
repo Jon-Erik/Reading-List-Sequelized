@@ -2,6 +2,7 @@
   <th scope="row">{{dataValues.id}}</th>
   <td>{{dataValues.title}}</td>
   <td>{{dataValues.author}}</td>
+  <td class="reader" data-reader="{{dataValues.reader}}" data-bookid="{{dataValues.id}}"><span class="current-reader">{{dataValues.reader}}</span><input type='text' class="reader-edit" style='display: none;'></td>
   <td><button class="update-status btn btn-outline-success" data-bookid="{{dataValues.id}}" data-newstatus="{{finished}}">{{#if finished}}Mark as read{{else}}Mark as unread{{/if}}</button></td>
   <td><button class="delete btn btn-outline-danger" data-bookid="{{dataValues.id}}">Delete</button></td>
  </tr>

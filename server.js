@@ -19,7 +19,9 @@ app.set("view engine", "handlebars");
 
 require("./routes/api-routes.js")(app);
 
-db.sequelize.sync({}).then(function() {
+//creates the table in the specified database if it doesn't exist,
+//then listens for requests to server
+db.sequelize.sync().then(function() {
 	app.listen(PORT, function() {
 		console.log("Server listening on: http://localhost:" + PORT);
 	});

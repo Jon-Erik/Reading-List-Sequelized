@@ -4,13 +4,14 @@
 	<title>Reading List</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="../../public/assets/css/styles.css">
 </head>
 <body class="container">
 	<div class="jumbotron">
-	  <h1 class="display-4">Reading List</h1>
-	  <p class="lead">Plan your reading here!</p>
-	  <hr class="my-4">
-	  <p>Use the functions below to make and update your own reading list.</p>
+	  <h1 class="display-4 text-center">Reading List</h1>
+	  <p class="lead text-center">Plan your reading here!</p>
+	  <hr class="my-4 text-center">
+	  <p>Use the functions below to create and update your own reading list.</p>
 	</div>
 	<div class="row">
 		<div class="col">
@@ -23,24 +24,20 @@
 				      <th scope="col">ID #</th>
 				      <th scope="col">Title</th>
 				      <th scope="col">Author</th>
+				      <th scope="col">Reader</th>
+				      <th scope="col">Mark as Read</th>
+				      <th scope="col">Delete</th>
 				    </tr>
 				  </thead>
 				  <tbody>
-				    <tr>
-				      <th scope="row">1</th>
-				      <td>Mark</td>
-				      <td>Otto</td>
-				    </tr>
-				    <tr>
-				      <th scope="row">2</th>
-				      <td>Jacob</td>
-				      <td>Thornton</td>
-				    </tr>
-				    <tr>
-				      <th scope="row">3</th>
-				      <td>Larry</td>
-				      <td>the Bird</td>
-				    </tr>
+					<tr>
+						<th scope="row">1</th>
+						<td>Title</td>
+						<td>author</td>
+						<td class="reader" data-reader="Add a reader here" data-bookid="1"><span class="current-reader">Click to update reader</span><input type='text' class="reader-edit" style='display: none;'></td>
+						<td><button class="update-status btn btn-outline-success" data-bookid="{{dataValues.id}}" data-newstatus="{{finished}}">Mark as read</button></td>
+						<td><button class="delete btn btn-outline-danger" data-bookid="{{dataValues.id}}">Delete</button></td>
+						</tr>
 				  </tbody>
 				</table>
 			  </div>
@@ -56,25 +53,18 @@
 				      <th scope="col">ID #</th>
 				      <th scope="col">Title</th>
 				      <th scope="col">Author</th>
+				      <th scope="col">Mark as unread</th>
+				      <th scope="col">Delete</th>
 				    </tr>
 				  </thead>
 				  <tbody>
-				    <tr>
-				      <th scope="row">1</th>
-				      <td>Mark</td>
-				      <td>Otto</td>
-				    </tr>
-				    <tr>
-				      <th scope="row">2</th>
-				      <td>Jacob</td>
-				      <td>Thornton</td>
-				    </tr>
-				    <tr>
-				      <th scope="row">3</th>
-				      <td>Larry</td>
-				      <td>the Bird</td>
-				    </tr>
-				  </tbody>
+				    <th scope="row">1</th>
+					<td>Title</td>
+					<td>author</td>
+					<td><button class="update-status btn btn-outline-success" data-bookid="{{dataValues.id}}" data-newstatus="{{finished}}">Mark as unread</button></td>
+					<td><button class="delete btn btn-outline-danger" data-bookid="{{dataValues.id}}">Delete</button></td>
+					</tr>
+			  	  </tbody>
 				</table>
 			  </div>
 			</div>
@@ -83,16 +73,16 @@
 	<div class="row">
 		<div class="col">
 			<div class="card">
-				<h5 class="card-header">Submit a Book</h5>
+				<h5 class="card-header">Add a book to your reading list</h5>
 				<div class="card-body">
-					<form id="target">
+					<form id="new-book">
 					  <div class="form-group">
 					    <label>Book Title</label>
-					    <input type="text" class="form-control" id="book-title" placeholder="Book title here">
+					    <input type="text" class="form-control" id="book-title" placeholder="title here">
 					  </div>
 					  <div class="form-group">
 					    <label>Author</label>
-					    <input type="text" class="form-control" id="book-title" placeholder="Book title here">
+					    <input type="text" class="form-control" id="author" placeholder="author here">
 					  </div>
 					  <button type="submit" class="btn btn-primary">Submit</button>
 					</form>
@@ -100,11 +90,93 @@
 			</div>
 		</div>
 	</div>
+
+	<script type="text/javascript">
+		$(".reader").on("click", function() {
+			var currentReader = $(this).data("reader");
+			//console.log(currentReader)
+			$(this).children().hide();
+			$(this).children("input.reader-edit").attr("placeholder", currentReader);
+			$(this).children("input.reader-edit").show();
+			$(this).children("input.reader-edit").focus();
+		})
+
+		$(".reader").on("keyup", function() {
+			var updatedBookId = $(this).data("bookid");
+			if (event.which === 13) {
+				var reader = $(this).children("input").val().trim();
+
+				var newReader = {
+					reader: reader
+				};
+
+				$.ajax("update-reader/" + updatedBookId, {
+					type: "PUT",
+					data: newReader
+				}).then(function() {
+					console.log("updated reader for id" + updatedBookId);
+					location.reload();
+				})
+			}
+		})
+
+		$(document).on("blur", ".reader", function() {
+			var currentReader = $(this).data("reader");
+			$(this).children().hide();
+			$(this).children("span").show()
+		});
+
+		//sets up post ajax request to add book to the database on submitting form
+		$("#new-book").submit(function(event) {
+			event.preventDefault();
+
+			var title = $("#book-title").val().trim();
+			var author = $("#author").val().trim();
+
+			var newBook = {
+				title: title,
+				author: author
+			}
+
+			$.ajax("/add", {
+				type: "POST",
+				data: newBook
+			}).then(
+				function() {
+					console.log("new book added");
+					location.reload();
+				}
+			);
+		})
+		//sets up put ajax request to mark book as read/unread
+		$(".update-status").on("click", function() {
+			var id = $(this).data("bookid");
+			var newStatus = $(this).data("newstatus");
+
+			var newStatusState = {
+				finished: newStatus
+			};
+
+			$.ajax("/update/" + id, {
+				type: "PUT",
+				data: newStatusState
+			}).then(function() {
+				console.log("updated id " + id);
+				location.reload();
+			})
+		})
+		//sets up delete ajax request to remove a book from the database
+		$(".delete").on("click", function() {
+			var id = $(this).data("bookid");
+
+			$.ajax("/delete/" + id, {
+				type: "DELETE"
+			}).then(function() {
+				console.log("deleted id " + id);
+				location.reload();
+			});
+		});
+
+	</script>	
 </body>
-<script type="text/javascript">
-	$("#target").submit(function(event) {
-		event.preventDefault();
-		alert("submit called");
-	})
-</script>
 </html>

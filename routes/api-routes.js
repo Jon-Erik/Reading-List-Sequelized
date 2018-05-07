@@ -39,6 +39,20 @@ module.exports = function(app) {
 		})
 	})
 
+	app.put("/update-reader/:id", function (req, res) {
+		db.book.update({
+			reader: req.body.reader
+		}, {
+			where: {
+				id: req.params.id
+			}
+		}).then(function(result) {
+			res.json(result);
+		}).catch(function(err) {
+			res.status(500).send(err);
+		})
+	})
+
 	app.delete("/delete/:id", function(req, res) {
 		db.book.destroy({
 			where: {
