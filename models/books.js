@@ -1,3 +1,6 @@
+//Creating a model (table) with sequelize syntax, specifying
+//data types, validations, etc. for each column
+
 module.exports = function(sequelize, DataTypes) {
 	var books = sequelize.define("book", {
 		title: {

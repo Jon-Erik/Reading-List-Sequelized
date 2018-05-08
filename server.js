@@ -26,5 +26,3 @@ db.sequelize.sync().then(function() {
 		console.log("Server listening on: http://localhost:" + PORT);
 	});
 });
-
-//Why did I have to instal mysql2 module???????????
